@@ -690,7 +690,7 @@ try
         }
 
         Common->Environment.AddVariable("DBUS_SESSION_BUS_ADDRESS", std::format("unix:path=/run/user/{}/bus", PasswordEntry->pw_uid));
-        Common->Environment.AddVariable(XDG_RUNTIME_DIR_ENV, std::format("/run/user/{}/", PasswordEntry->pw_uid));
+        Common->Environment.AddVariable(XDG_RUNTIME_DIR_ENV, std::format("/run/user/{}", PasswordEntry->pw_uid));
     }
 
     //
@@ -2258,7 +2258,16 @@ Return Value:
     if (Value != nullptr)
     {
         Config.VmId = Value;
-        unsetenv(LX_WSL2_VM_ID_ENV);
+
+        //
+        // Unset the environment variable for user distros.
+        //
+
+        Value = getenv(LX_WSL2_SHARED_MEMORY_OB_DIRECTORY);
+        if (!Value)
+        {
+            unsetenv(LX_WSL2_VM_ID_ENV);
+        }
     }
 
     //

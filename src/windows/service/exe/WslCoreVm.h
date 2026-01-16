@@ -40,11 +40,6 @@ inline constexpr auto c_optionsValueName = L"Options";
 inline constexpr auto c_typeValueName = L"Type";
 inline constexpr auto c_mountNameValueName = L"Name";
 
-static constexpr GUID c_virtiofsAdminClassId = {0x7e6ad219, 0xd1b3, 0x42d5, {0xb8, 0xee, 0xd9, 0x63, 0x24, 0xe6, 0x4f, 0xf6}};
-
-// {60285AE6-AAF3-4456-B444-A6C2D0DEDA38}
-static constexpr GUID c_virtiofsClassId = {0x60285ae6, 0xaaf3, 0x4456, {0xb4, 0x44, 0xa6, 0xc2, 0xd0, 0xde, 0xda, 0x38}};
-
 namespace wrl = Microsoft::WRL;
 
 /// <summary>
@@ -247,7 +242,7 @@ private:
     void ReadGuestCapabilities();
 
     _Requires_lock_held_(m_lock)
-    ULONG ReserveLun(_In_ std::optional<ULONG> Lun);
+    ULONG ReserveLun(_In_ std::optional<ULONG> Lun = {});
 
     void RestorePassthroughDiskState(_In_ LPCWSTR Disk) const;
 
@@ -301,6 +296,7 @@ private:
     bool m_defaultKernel = true;
     LX_MINI_INIT_MOUNT_DEVICE_TYPE m_systemDistroDeviceType = LxMiniInitMountDeviceTypeInvalid;
     ULONG m_systemDistroDeviceId = ULONG_MAX;
+    ULONG m_kernelModulesDeviceId = ULONG_MAX;
     wsl::windows::common::hcs::unique_hcs_system m_system;
     wil::unique_socket m_listenSocket;
     std::function<void(GUID)> m_onExit;
